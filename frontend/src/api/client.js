@@ -1,5 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
-
+const API_BASE = "https://oncoway-assistance.onrender.com";
 export function getToken() {
   return localStorage.getItem("token");
 }
