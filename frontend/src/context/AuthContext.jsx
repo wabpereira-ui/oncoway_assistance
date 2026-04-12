@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { api, getToken, setToken } from "../api/client.js";
 
 const AuthContext = createContext(null);
+const API_URL = "https://oncoway-assistance.onrender.com";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -14,8 +15,9 @@ export function AuthProvider({ children }) {
       setLoading(false);
       return;
     }
+
     try {
-      const me = await api("/api/auth/me");
+      const me = await api(`${API_URL}/api/auth/me`);
       setUser(me);
     } catch {
       setToken(null);
@@ -30,14 +32,17 @@ export function AuthProvider({ children }) {
   }, [refresh]);
 
   const login = async (email, password) => {
-    const data = await api("/api/auth/login", {
+    const data = await api(`${API_URL}/api/auth/login`, {
       method: "POST",
       body: { email, password },
     });
+
     setToken(data.access_token);
-    const me = await api("/api/auth/me");
+
+    const me = await api(`${API_URL}/api/auth/me`);
     setUser(me);
     setLoading(false);
+
     return me;
   };
 
@@ -48,7 +53,7 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(
     () => ({ user, loading, login, logout, refresh }),
-    [user, loading, login, logout, refresh]
+    [user, loading, refresh]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
